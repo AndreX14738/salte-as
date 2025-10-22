@@ -265,12 +265,29 @@
                         📋 Todo el Historial
                     </button>
                 </div>
-                <div style="text-align: center; margin-top: 15px; padding: 10px; background: #f5f5f5; border-radius: 8px;">
-                    <p style="margin: 0 0 5px 0; color: #1a1a1a; font-weight: bold;">💡 Instrucciones:</p>
-                    <p style="margin: 0; color: #666; font-size: 0.9rem;">
-                        Se abrirá una nueva ventana con el reporte.<br>
-                        Desde allí puedes usar <strong>Ctrl+P</strong> para imprimir o <strong>Guardar como PDF</strong>.
+                <div style="text-align: center; margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #f5f5f5 0%, #fff3f3 100%); border-radius: 10px; border: 2px solid #dc143c;">
+                    <p style="margin: 0 0 10px 0; color: #dc143c; font-weight: bold; font-size: 1.1rem;">📥 CÓMO DESCARGAR EL PDF</p>
+                    <p style="margin: 0 0 8px 0; color: #1a1a1a; font-weight: 600;">
+                        Se abrirá una nueva ventana con el reporte
                     </p>
+                    <div style="background: white; padding: 12px; border-radius: 8px; margin-top: 10px;">
+                        <p style="margin: 0 0 8px 0; color: #dc143c; font-weight: bold;">EN CELULAR:</p>
+                        <p style="margin: 0 0 5px 0; color: #333; font-size: 0.9rem;">
+                            1. Toca los 3 puntos (⋮) arriba a la derecha
+                        </p>
+                        <p style="margin: 0 0 5px 0; color: #333; font-size: 0.9rem;">
+                            2. Selecciona "Compartir" o "Imprimir"
+                        </p>
+                        <p style="margin: 0; color: #333; font-size: 0.9rem;">
+                            3. Elige "Guardar como PDF" o "Descargar PDF"
+                        </p>
+                    </div>
+                    <div style="background: white; padding: 12px; border-radius: 8px; margin-top: 8px;">
+                        <p style="margin: 0 0 8px 0; color: #dc143c; font-weight: bold;">EN COMPUTADORA:</p>
+                        <p style="margin: 0; color: #333; font-size: 0.9rem;">
+                            Presiona <strong>Ctrl+P</strong> y selecciona "Guardar como PDF"
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -285,6 +302,10 @@
         </div>
     </footer>
 
-    <script src="script.js?v=20251008e"></script>
+    <!-- Librerías para generar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <script src="script.js?v=20251008f"></script>
 </body>
 </html>

@@ -1230,16 +1230,9 @@ function imprimirPDF(periodo, autoImprimir = false) {
     ventanaImpresion.document.write(contenidoHTML);
     ventanaImpresion.document.close();
     
-    // Si autoImprimir es true, abre el diálogo de impresión automáticamente
-    if (autoImprimir) {
-        setTimeout(() => {
-            ventanaImpresion.focus();
-            ventanaImpresion.print();
-        }, 500);
-    } else {
-        // Solo enfocar la ventana para que el usuario pueda verla
-        setTimeout(() => {
-            ventanaImpresion.focus();
-        }, 100);
-    }
+    // Abrir diálogo de impresión automáticamente (incluye opción "Guardar como PDF")
+    setTimeout(() => {
+        ventanaImpresion.focus();
+        ventanaImpresion.print();
+    }, 500);
 }
