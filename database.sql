@@ -1,0 +1,46 @@
+http://192.168.0.8/salteneria/index.htmlhttp://192.168.0.8/salteneria/index.htmlhttp://192.168.0.8/salteneria/index.htmlhttp://192.168.0.8/salteneria/index.htmlhttp://192.168.0.8/salteneria/index.htmlhttp://192.168.0.8/salteneria/index.html-- Crear base de datos para Salteñería Victoria
+CREATE DATABASE IF NOT EXISTS salteneria_db;
+USE salteneria_db;
+
+-- Eliminar tablas si existen (para evitar errores)
+DROP TABLE IF EXISTS detalle_venta;
+DROP TABLE IF EXISTS ventas;
+DROP TABLE IF EXISTS productos;
+
+-- Crear tabla de productos
+CREATE TABLE productos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  descripcion TEXT,
+  precio DECIMAL(10,2) NOT NULL,
+  stock INT DEFAULT 0
+);
+
+-- Crear tabla de ventas
+CREATE TABLE ventas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+  total DECIMAL(10,2) NOT NULL
+);
+
+-- Crear tabla de detalle de venta
+CREATE TABLE detalle_venta (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_venta INT NOT NULL,
+  id_producto INT NOT NULL,
+  cantidad INT NOT NULL,
+  precio_unitario DECIMAL(10,2) NOT NULL,
+  subtotal DECIMAL(10,2) GENERATED ALWAYS AS (cantidad * precio_unitario) STORED,
+  FOREIGN KEY (id_venta) REFERENCES ventas(id) ON DELETE CASCADE,
+  FOREIGN KEY (id_producto) REFERENCES productos(id)
+);
+
+-- Insertar productos iniciales
+INSERT INTO productos (nombre, descripcion, precio, stock) VALUES
+('Salteña Picante', 'Salteña tradicional con relleno picante', 5.00, 50),
+('Salteña Dulce', 'Salteña con un toque dulce y suave', 5.00, 40),
+('Salteña de Fricasé', 'Salteña con sabor al fricasé boliviano', 6.00, 30),
+('Refresco Hervido', 'Refresco caliente tradicional', 3.00, 25),
+('Coca-Cola', 'Gaseosa Coca-Cola 500ml', 5.00, 20),
+('Fanta', 'Gaseosa Fanta sabor naranja 500ml', 5.00, 20),
+('Sprite', 'Gaseosa Sprite 500ml', 5.00, 20);

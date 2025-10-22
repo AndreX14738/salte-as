@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salteñería Victoria</title>
+    <link rel="stylesheet" href="styles.css?v=20251008f">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="imagen/WhatsApp Image 2025-10-22 at 8.35.12 AM.jpeg" alt="Logo Salteñería Victoria">
+                <h1>Salteñeria Victoria</h1>
+            </div>
+            <nav class="nav">
+                <a href="#" class="nav-link active" onclick="showSection('tienda')">Tienda</a>
+                <a href="#" class="nav-link" onclick="showSection('administrar')">Administrar</a>
+                <a href="#" class="nav-link" onclick="showSection('historial')">Historial</a>
+                <div class="cart-container">
+                    <span class="cart-icon">🛒</span>
+                    <span class="cart-text">Carrito (<span id="cart-count">0</span>)</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Sección Tienda -->
+    <section id="tienda" class="section active">
+        <div class="container">
+            <h2>Nuestras Salteñas</h2>
+            <div class="filters">
+                <input type="text" id="search-input" placeholder="Buscar salteñas..." class="search-input">
+                <select id="category-filter" class="category-filter">
+                    <option value="">Todos los tipos</option>
+                    <option value="Picante">Picante</option>
+                    <option value="Dulce">Dulce</option>
+                    <option value="Fricasé">Fricasé</option>
+                    <option value="Especial">Especial</option>
+                </select>
+            </div>
+            <div id="products-grid" class="products-grid">
+                <!-- Los productos se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Administrar -->
+    <section id="administrar" class="section">
+        <div class="container">
+            <h2>Administrar Salteñas</h2>
+            <div class="admin-controls">
+                <button class="btn btn-primary" onclick="showAddProductModal()">Agregar Salteña</button>
+                <button class="btn btn-success" onclick="showCategoryModal()">📁 Gestionar Tipos</button>
+            </div>
+            <div id="admin-products-grid" class="admin-products-grid">
+                <!-- Los productos para administrar se cargarán aquí -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Historial -->
+    <section id="historial" class="section">
+        <div class="container">
+            <h2>Historial de Ventas</h2>
+            <div class="admin-controls">
+                <button class="btn btn-primary" onclick="mostrarGanancias()">💰 Ver Ganancias</button>
+                <button class="btn btn-primary" onclick="mostrarModalImprimirPDF()">� Descargar PDF</button>
+                <button class="btn btn-danger" onclick="vaciarHistorial()">Vaciar Historial</button>
+            </div>
+            <div id="sales-history" class="sales-history">
+                <!-- El historial se cargará aquí -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Carrito -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Carrito de Compras</h3>
+                <span class="close" onclick="closeCartModal()">&times;</span>
+            </div>
+            <div id="cart-items" class="cart-items">
+                <!-- Items del carrito se mostrarán aquí -->
+            </div>
+            <div class="cart-total">
+                <strong>Total: Bs. <span id="cart-total">0.00</span></strong>
+            </div>
+            <div class="cart-actions">
+                <button class="btn btn-secondary" onclick="clearCart()">Vaciar Carrito</button>
+                <button class="btn btn-primary" onclick="showPaymentModal()">Proceder al Pago</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pago -->
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Método de Pago</h3>
+                <span class="close" onclick="closePaymentModal()">&times;</span>
+            </div>
+            <div class="payment-methods">
+                <div class="payment-option" onclick="selectPayment('efectivo')">
+                    <div class="payment-icon">💵</div>
+                    <h4>Pago en Efectivo</h4>
+                    <p>Pago directo en bolivianos</p>
+                </div>
+                <div class="payment-option" onclick="selectPayment('qr')">
+                    <div class="payment-icon">📱</div>
+                    <h4>Pago QR</h4>
+                    <p>Escanea el código QR</p>
+                </div>
+            </div>
+            <div id="payment-details" class="payment-details hidden">
+                <div id="efectivo-details" class="payment-detail hidden">
+                    <h4>Pago en Efectivo</h4>
+                    <p>Total a pagar: Bs. <span id="efectivo-total">0.00</span></p>
+                    <div class="input-group">
+                        <label>Monto recibido (Bs.):</label>
+                        <input type="number" id="efectivo-recibido" placeholder="0.00" step="0.01">
+                    </div>
+                    <div id="cambio-info" class="cambio-info hidden">
+                        <p>Cambio: Bs. <span id="cambio-amount">0.00</span></p>
+                    </div>
+                    <button class="btn btn-primary" onclick="processEfectivoPayment()">Confirmar Pago</button>
+                </div>
+                <div id="qr-details" class="payment-detail hidden">
+                    <h4>Pago con QR</h4>
+                    <div class="qr-code">
+                        <div class="qr-placeholder">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcaC463UwxPpUCxqgo5ZJ3ZE85elP3S5MmGs_LmvjzNs3XpUQUC_BkaCup52Tr41_5&usqp=CAU" alt="Código QR de Pago" style="width: 150px; height: 150px; border: 1px solid #ddd;">
+                            <p>Escanea el código QR</p>
+                            <p>Total: Bs. <span id="qr-total">0.00</span></p>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="processQRPayment()">Confirmar Pago</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Agregar/Editar Producto -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="product-modal-title">Agregar Producto</h3>
+                <span class="close" onclick="closeProductModal()">&times;</span>
+            </div>
+            <form id="product-form" class="product-form">
+                <input type="hidden" id="product-id">
+                <div class="input-group">
+                    <label>Nombre:</label>
+                    <input type="text" id="product-name" required>
+                </div>
+                <div class="input-group">
+                    <label>Precio (Bs.):</label>
+                    <input type="number" id="product-price" step="0.01" required>
+                </div>
+                <div class="input-group">
+                    <label>Cantidad:</label>
+                    <input type="number" id="product-quantity" required>
+                </div>
+                <div class="input-group">
+                    <label>Tipo:</label>
+                    <select id="product-category" required>
+                        <option value="">Seleccionar tipo</option>
+                        <option value="Picante">Picante</option>
+                        <option value="Dulce">Dulce</option>
+                        <option value="Fricasé">Fricasé</option>
+                        <option value="Especial">Especial</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Imagen (URL):</label>
+                    <input type="url" id="product-image-url" placeholder="https://ejemplo.com/imagen.jpg">
+                    <small class="input-help">Pega la URL de la imagen del producto (opcional)</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Gestionar Categorías -->
+    <div id="category-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📁 Gestionar Tipos de Salteñas</h3>
+                <span class="close" onclick="closeCategoryModal()">&times;</span>
+            </div>
+            <div class="category-content">
+                <div class="add-category-section">
+                    <h4>Agregar Nuevo Tipo</h4>
+                    <div class="form-group">
+                        <input type="text" id="new-category-name" placeholder="Nombre del tipo" maxlength="30">
+                        <button class="btn btn-primary" onclick="addNewCategory()">➕ Agregar</button>
+                    </div>
+                </div>
+                <div class="categories-list-section">
+                    <h4>Tipos Existentes</h4>
+                    <div id="categories-list" class="categories-list">
+                        <!-- Lista de categorías se cargará aquí -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ganancias -->
+    <div id="ganancias-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>💰 Reporte de Ganancias</h3>
+                <span class="close" onclick="closeGananciasModal()">&times;</span>
+            </div>
+            <div class="ganancias-content">
+                <div class="ganancia-item">
+                    <h4>📅 Hoy</h4>
+                    <p class="ganancia-amount">Bs. <span id="ganancia-dia">0.00</span></p>
+                </div>
+                <div class="ganancia-item">
+                    <h4>📊 Esta Semana</h4>
+                    <p class="ganancia-amount">Bs. <span id="ganancia-semana">0.00</span></p>
+                </div>
+                <div class="ganancia-item">
+                    <h4>📈 Este Mes</h4>
+                    <p class="ganancia-amount">Bs. <span id="ganancia-mes">0.00</span></p>
+                </div>
+                <div class="ganancia-item">
+                    <h4>💎 Este Año</h4>
+                    <p class="ganancia-amount">Bs. <span id="ganancia-ano">0.00</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Imprimir PDF -->
+    <div id="pdf-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>� Descargar Historial en PDF</h3>
+                <span class="close" onclick="closePDFModal()">&times;</span>
+            </div>
+            <div class="pdf-options">
+                <h4>Selecciona el período a descargar:</h4>
+                <div class="pdf-period-options">
+                    <button class="btn btn-primary period-btn" onclick="imprimirPDF('hoy', false)">
+                        📅 Hoy
+                    </button>
+                    <button class="btn btn-primary period-btn" onclick="imprimirPDF('semana', false)">
+                        📊 Esta Semana
+                    </button>
+                    <button class="btn btn-primary period-btn" onclick="imprimirPDF('mes', false)">
+                        📈 Este Mes
+                    </button>
+                    <button class="btn btn-primary period-btn" onclick="imprimirPDF('año', false)">
+                        💎 Este Año
+                    </button>
+                    <button class="btn btn-secondary period-btn" onclick="imprimirPDF('todo', false)">
+                        📋 Todo el Historial
+                    </button>
+                </div>
+                <div style="text-align: center; margin-top: 15px; padding: 10px; background: #f5f5f5; border-radius: 8px;">
+                    <p style="margin: 0 0 5px 0; color: #1a1a1a; font-weight: bold;">💡 Instrucciones:</p>
+                    <p style="margin: 0; color: #666; font-size: 0.9rem;">
+                        Se abrirá una nueva ventana con el reporte.<br>
+                        Desde allí puedes usar <strong>Ctrl+P</strong> para imprimir o <strong>Guardar como PDF</strong>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="centered-content">
+            <p>&copy; 2025 Salteñería Victoria. Todos los derechos reservados.</p>
+            <div class="footer-flags">
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js?v=20251008e"></script>
+</body>
+</html>
